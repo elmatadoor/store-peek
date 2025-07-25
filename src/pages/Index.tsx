@@ -1,14 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from 'react';
+import { WooCommerceOrder } from '@/types/woocommerce';
+import { wooCommerceService } from '@/services/woocommerce';
+import { WooCommerceSetup } from '@/components/WooCommerceSetup';
+import { OrdersList } from '@/components/OrdersList';
+import { OrderDetails } from '@/components/OrderDetails';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [isConfigured, setIsConfigured] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<WooCommerceOrder | null>(null);
+
+  useEffect(() => {
+    // Check if WooCommerce is already configured
+    const config = wooCommerceService.getConfig();
+    setIsConfigured(!!config);
+  }, []);
+
+  const handleConfigured = () => {
+    setIsConfigured(true);
+  };
+
+  const handleOrderSelect = (order: WooCommerceOrder) => {
+    setSelectedOrder(order);
+  };
+
+  const handleBackToOrders = () => {
+    setSelectedOrder(null);
+  };
+
+  if (!isConfigured) {
+    return <WooCommerceSetup onConfigured={handleConfigured} />;
+  }
+
+  if (selectedOrder) {
+    return <OrderDetails order={selectedOrder} onBack={handleBackToOrders} />;
+  }
+
+  return <OrdersList onOrderSelect={handleOrderSelect} />;
 };
 
 export default Index;
