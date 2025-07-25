@@ -90,29 +90,34 @@ Before you begin, make sure you have the following tools installed:
     
 -   **Java Development Kit (JDK 11 or higher)**
     
-
 ---
 
 ### 🧩 **Setup and Build Steps**
 
 Follow these steps to set up your app and build the APK:
 
-1.  **Build your frontend app:**
+1.  **Install dependencies:**  
+    Before building, install all required packages by running:  
     
+    ```bash
+    npm i
+    ```
+
+2.  **Build your frontend app:**  
     Run the following command to build your frontend code:
     
     ```bash
     npm run build
     ```
     
-2.  **Install Capacitor CLI and Core packages**  
+3.  **Install Capacitor CLI and Core packages**  
     If you haven’t installed them yet, run:
     
     ```bash
     npm install @capacitor/core @capacitor/cli
     ```
     
-3.  **Initialize Capacitor**  
+4.  **Initialize Capacitor**  
     If you haven’t initialized Capacitor in your project, do so with:
     
     ```bash
@@ -121,29 +126,29 @@ Follow these steps to set up your app and build the APK:
     
     *Note: If you see an error regarding `capacitor.config.ts`, simply delete it before running this command.*
     
-4.  **Add the Android platform**  
+5.  **Add the Android platform**  
     Add Android support to your project with:
     
     ```bash
     npx cap add android
     ```
     
-5.  **Sync your assets and configuration**  
+6.  **Sync your assets and configuration**  
     Sync the latest web assets and configurations to your native Android project:
     
     ```bash
     npx cap sync android
     ```
     
-6.  **Open your Android project in Android Studio**  
+7.  **Open your Android project in Android Studio**  
     Open the Android project using:
     
     ```bash
     npx cap open android
     ```
     
-
 ---
+
 
 ### 🛠 **Build and Run APK in Android Studio**
 
