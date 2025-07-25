@@ -5,6 +5,7 @@ import { OrderCard } from '@/components/OrderCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { toast } from '@/hooks/use-toast';
 import { Loader2, RefreshCw, Search, Filter, Package } from 'lucide-react';
 
@@ -18,8 +19,12 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalOrders, setTotalOrders] = useState(0);
+  
+  const ordersPerPage = 10;
 
-  const loadOrders = async (refresh = false) => {
+  const loadOrders = async (refresh = false, page = currentPage) => {
     if (refresh) {
       setIsRefreshing(true);
     } else {
@@ -28,11 +33,21 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
 
     try {
       const fetchedOrders = await wooCommerceService.getOrders(
-        1, 
-        50, 
+        page, 
+        ordersPerPage, 
         statusFilter === 'all' ? undefined : statusFilter
       );
       setOrders(fetchedOrders);
+      
+      // For demonstration, we'll calculate total from the response
+      // In a real WooCommerce API, you'd get this from response headers
+      // For now, we'll estimate based on the returned data
+      if (fetchedOrders.length < ordersPerPage) {
+        setTotalOrders((page - 1) * ordersPerPage + fetchedOrders.length);
+      } else {
+        // Estimate more pages exist
+        setTotalOrders(page * ordersPerPage + 1);
+      }
     } catch (error) {
       toast({
         title: "Error Loading Orders",
@@ -46,8 +61,13 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
   };
 
   useEffect(() => {
-    loadOrders();
+    setCurrentPage(1);
+    loadOrders(false, 1);
   }, [statusFilter]);
+
+  useEffect(() => {
+    loadOrders(false, currentPage);
+  }, [currentPage]);
 
   const filteredOrders = orders.filter(order =>
     order.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -120,7 +140,7 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
         </div>
 
         {/* Orders List */}
-        <div className="space-y-4">
+        <div className="space-y-4 mb-8">
           {filteredOrders.length === 0 ? (
             <div className="text-center py-12">
               <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
@@ -142,6 +162,65 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
             ))
           )}
         </div>
+
+        {/* Pagination */}
+        {orders.length > 0 && (
+          <div className="flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                      }
+                    }}
+                    className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                
+                {/* Page Numbers */}
+                {Array.from({ length: Math.min(5, Math.ceil(totalOrders / ordersPerPage)) }, (_, i) => {
+                  const pageNumber = Math.max(1, currentPage - 2) + i;
+                  const maxPage = Math.ceil(totalOrders / ordersPerPage);
+                  
+                  if (pageNumber > maxPage) return null;
+                  
+                  return (
+                    <PaginationItem key={pageNumber}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(pageNumber);
+                        }}
+                        isActive={currentPage === pageNumber}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const maxPage = Math.ceil(totalOrders / ordersPerPage);
+                      if (currentPage < maxPage) {
+                        setCurrentPage(currentPage + 1);
+                      }
+                    }}
+                    className={currentPage >= Math.ceil(totalOrders / ordersPerPage) ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
     </div>
   );
