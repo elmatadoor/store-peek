@@ -52,7 +52,7 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
   const filteredOrders = orders.filter(order =>
     order.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
     `${order.billing.first_name} ${order.billing.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.billing.email.toLowerCase().includes(searchTerm.toLowerCase())
+    order.billing.phone.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -93,7 +93,7 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder="Search orders, customers, or emails..."
+              placeholder="Search orders, customers, or phone numbers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
