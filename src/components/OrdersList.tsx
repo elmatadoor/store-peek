@@ -69,24 +69,21 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
     loadOrders(false, currentPage);
   }, [currentPage]);
 
-  const filteredOrders = orders.filter(order => {
-    const searchLower = searchTerm.toLowerCase();
-    const orderNumber = order.number.toLowerCase();
-    
-    // Handle order number search with or without # prefix
-    const isOrderNumberSearch = searchTerm.startsWith('#') || /^\d+$/.test(searchTerm);
-    if (isOrderNumberSearch) {
-      const cleanSearchTerm = searchTerm.startsWith('#') ? searchTerm.slice(1) : searchTerm;
-      if (orderNumber.includes(cleanSearchTerm.toLowerCase())) {
-        return true;
-      }
-    }
-    
-    // Regular search in order number, customer name, and phone
-    return orderNumber.includes(searchLower) ||
-           `${order.billing.first_name} ${order.billing.last_name}`.toLowerCase().includes(searchLower) ||
-           order.billing.phone.toLowerCase().includes(searchLower);
-  });
+const filteredOrders = orders.filter((order) => {
+  const searchLower = searchTerm.trim().toLowerCase();
+
+  // Handle search by order number with "#" prefix (e.g. #1234)
+  if (searchLower.startsWith('#')) {
+    const cleanOrderNumber = searchLower.slice(1);
+    return order.number === cleanOrderNumber;
+  }
+
+  // Otherwise, treat as phone number search
+  const phone = order.billing.phone?.replace(/\s+/g, '') || '';
+  const phoneSearch = searchLower.replace(/\s+/g, '');
+  return phone.includes(phoneSearch);
+});
+
 
   if (isLoading) {
     return (
