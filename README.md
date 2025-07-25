@@ -96,14 +96,7 @@ Before you begin, make sure you have the following tools installed:
 ### 🧩 **Setup and Build Steps**
 
 Follow these steps to set up your app and build the APK:
-0.  **Install dependencies:**
-    
-    Before building your app, install all required dependencies by running:
-    
-    ```bash
-    npm i
-    ```
-    
+
 1.  **Build your frontend app:**
     
     Run the following command to build your frontend code:
