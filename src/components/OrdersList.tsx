@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { WooCommerceOrder } from '@/types/woocommerce';
 import { wooCommerceService } from '@/services/woocommerce';
 import { OrderCard } from '@/components/OrderCard';
+import { StatsCards } from '@/components/StatsCards';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -117,6 +118,9 @@ const filteredOrders = orders.filter((order) => {
             Refresh
           </Button>
         </div>
+
+        {/* Statistics Cards */}
+        <StatsCards />
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">

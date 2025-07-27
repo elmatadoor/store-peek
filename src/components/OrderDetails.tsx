@@ -98,25 +98,26 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
                 <div className="space-y-4">
                   {order.line_items.map((item, index) => (
                     <div key={item.id}>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-medium">{item.name}</h4>
-                          {item.sku && (
-                            <p className="text-sm text-muted-foreground">SKU: {item.sku}</p>
-                          )}
-                          <div className="flex items-center gap-4 mt-2 text-sm">
-                            <Badge variant="outline">Qty: {item.quantity}</Badge>
-                            <span className="text-muted-foreground">
-                              {order.currency} {item.price} each
-                            </span>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-medium">
-                            {order.currency} {item.total}
-                          </div>
-                        </div>
-                      </div>
+                       <div className="flex flex-col">
+                         <div className="flex-1">
+                           <h4 className="font-medium">{item.name}</h4>
+                           {item.sku && (
+                             <p className="text-sm text-muted-foreground">SKU: {item.sku}</p>
+                           )}
+                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2 text-sm">
+                             <Badge variant="outline">Qty: {item.quantity}</Badge>
+                             <span className="text-muted-foreground">
+                               {order.currency} {item.price} each
+                             </span>
+                           </div>
+                           <div className="mt-2">
+                             <span className="text-sm text-muted-foreground">Price: </span>
+                             <span className="font-medium text-primary">
+                               {order.currency} {item.total}
+                             </span>
+                           </div>
+                         </div>
+                       </div>
                       {index < order.line_items.length - 1 && <Separator className="mt-4" />}
                     </div>
                   ))}
@@ -177,38 +178,17 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
                 <CardTitle>Customer</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2">Contact</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <span>{order.billing.email}</span>
-                    </div>
-                    {order.billing.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        <span>{order.billing.phone}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h4 className="font-medium mb-2 flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    Billing Address
-                  </h4>
-                  <div className="text-sm text-muted-foreground">
-                    <div>{order.billing.first_name} {order.billing.last_name}</div>
-                    {order.billing.company && <div>{order.billing.company}</div>}
-                    <div>{order.billing.address_1}</div>
-                    {order.billing.address_2 && <div>{order.billing.address_2}</div>}
-                    <div>{order.billing.city}, {order.billing.state} {order.billing.postcode}</div>
-                    <div>{order.billing.country}</div>
-                  </div>
-                </div>
+                 <div>
+                   <h4 className="font-medium mb-2">Contact</h4>
+                   <div className="space-y-2 text-sm">
+                     {order.billing.phone && (
+                       <div className="flex items-center gap-2">
+                         <Phone className="w-4 h-4 text-muted-foreground" />
+                         <span>{order.billing.phone}</span>
+                       </div>
+                     )}
+                   </div>
+                 </div>
 
                 {(order.shipping.address_1 || order.shipping.first_name) && (
                   <>
