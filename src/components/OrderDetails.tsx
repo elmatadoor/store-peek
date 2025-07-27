@@ -154,7 +154,7 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal :</span>
-                  <span>{(parseFloat(order.total) - parseFloat(order.total_tax) - parseFloat(order.shipping_total)).toFixed(2)} DA</span>
+                  <span>{Math.floor(parseFloat(order.total) - parseFloat(order.total_tax) - parseFloat(order.shipping_total))} DA</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping :</span>
