@@ -105,13 +105,13 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
                              <p className="text-sm text-muted-foreground">SKU: {item.sku}</p>
                            )}
                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2 text-sm">
-                             <Badge variant="outline">Qty: {item.quantity}</Badge>
+                             <Badge variant="outline">Qty : {item.quantity}</Badge>
                              <span className="text-muted-foreground">
                                {item.price} DA each
                              </span>
                            </div>
                            <div className="mt-2">
-                             <span className="text-sm text-muted-foreground">Price: </span>
+                             <span className="text-sm text-muted-foreground">Price : </span>
                              <span className="font-medium text-primary">
                                {item.total} DA
                              </span>
@@ -153,20 +153,20 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span>Subtotal:</span>
+                  <span>Subtotal :</span>
                   <span>{(parseFloat(order.total) - parseFloat(order.total_tax) - parseFloat(order.shipping_total)).toFixed(2)} DA</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Shipping:</span>
+                  <span>Shipping :</span>
                   <span>{order.shipping_total} DA</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Tax:</span>
+                  <span>Tax :</span>
                   <span>{order.total_tax} DA</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-medium text-lg">
-                  <span>Total:</span>
+                  <span>Total :</span>
                   <span>{order.total} DA</span>
                 </div>
               </CardContent>
