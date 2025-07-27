@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { WooCommerceOrder } from '@/types/woocommerce';
-import { wooCommerceService } from '@/services/woocommerce';
+import { wooCommerceService, StoreStats } from '@/services/woocommerce';
 import { OrderCard } from '@/components/OrderCard';
 import { StatsCards } from '@/components/StatsCards';
+import { DateRangeSelector, DateRange } from '@/components/DateRangeSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { toast } from '@/hooks/use-toast';
 import { Loader2, RefreshCw, Search, Filter, Package } from 'lucide-react';
+import { subDays, format } from 'date-fns';
 
 interface OrdersListProps {
   onOrderSelect: (order: WooCommerceOrder) => void;
@@ -16,12 +18,24 @@ interface OrdersListProps {
 
 export function OrdersList({ onOrderSelect }: OrdersListProps) {
   const [orders, setOrders] = useState<WooCommerceOrder[]>([]);
+  const [stats, setStats] = useState<StoreStats>({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalSales: 0,
+    activeCustomers: 0,
+    currency: 'USD'
+  });
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: subDays(new Date(), 30),
+    to: new Date()
+  });
   
   const ordersPerPage = 10;
 
@@ -61,6 +75,24 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
     }
   };
 
+  const loadStats = async () => {
+    setIsLoadingStats(true);
+    try {
+      const dateFrom = format(dateRange.from, 'yyyy-MM-dd');
+      const dateTo = format(dateRange.to, 'yyyy-MM-dd');
+      const fetchedStats = await wooCommerceService.getStatsWithComparison(dateFrom, dateTo);
+      setStats(fetchedStats);
+    } catch (error) {
+      toast({
+        title: "Error Loading Statistics",
+        description: "Failed to fetch store statistics.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingStats(false);
+    }
+  };
+
   useEffect(() => {
     setCurrentPage(1);
     loadOrders(false, 1);
@@ -69,6 +101,10 @@ export function OrdersList({ onOrderSelect }: OrdersListProps) {
   useEffect(() => {
     loadOrders(false, currentPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    loadStats();
+  }, [dateRange]);
 
 const filteredOrders = orders.filter((order) => {
   const searchLower = searchTerm.trim().toLowerCase();
@@ -120,7 +156,16 @@ const filteredOrders = orders.filter((order) => {
         </div>
 
         {/* Statistics Cards */}
-        <StatsCards />
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+            <h2 className="text-lg font-semibold">Store Statistics</h2>
+            <DateRangeSelector 
+              value={dateRange} 
+              onChange={setDateRange}
+            />
+          </div>
+          <StatsCards stats={stats} isLoading={isLoadingStats} />
+        </div>
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
