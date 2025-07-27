@@ -107,13 +107,13 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2 text-sm">
                              <Badge variant="outline">Qty: {item.quantity}</Badge>
                              <span className="text-muted-foreground">
-                               {order.currency} {item.price} each
+                               {item.price} DA each
                              </span>
                            </div>
                            <div className="mt-2">
                              <span className="text-sm text-muted-foreground">Price: </span>
                              <span className="font-medium text-primary">
-                               {order.currency} {item.total}
+                               {item.total} DA
                              </span>
                            </div>
                          </div>
@@ -154,20 +154,20 @@ export function OrderDetails({ order, onBack }: OrderDetailsProps) {
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span>{order.currency} {(parseFloat(order.total) - parseFloat(order.total_tax) - parseFloat(order.shipping_total)).toFixed(2)}</span>
+                  <span>{(parseFloat(order.total) - parseFloat(order.total_tax) - parseFloat(order.shipping_total)).toFixed(2)} DA</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping:</span>
-                  <span>{order.currency} {order.shipping_total}</span>
+                  <span>{order.shipping_total} DA</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Tax:</span>
-                  <span>{order.currency} {order.total_tax}</span>
+                  <span>{order.total_tax} DA</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-medium text-lg">
                   <span>Total:</span>
-                  <span>{order.currency} {order.total}</span>
+                  <span>{order.total} DA</span>
                 </div>
               </CardContent>
             </Card>

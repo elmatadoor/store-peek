@@ -15,10 +15,7 @@ interface StatsCardsProps {
 
 export function StatsCards({ stats, isLoading }: StatsCardsProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: stats.currency,
-    }).format(amount);
+    return `${amount.toLocaleString()} DA`;
   };
 
   const formatChange = (change: number | undefined) => {
